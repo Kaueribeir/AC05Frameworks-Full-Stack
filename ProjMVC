@@ -1,0 +1,64 @@
+using System;
+using Systerm.Collections.Generic;
+using System.Data.SqlClient;
+using System.linq;
+using System.Thereading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.ProjMVC.Models;
+
+namespace ProjMVC.Controllers 
+{
+    public class ProdutoController : Controller
+    {
+        List<ProdutoViewModel> Produto = New List<ProdutoViewModel>();
+
+        public IActionResult Idex()
+        {
+            var conn = new SqlConeConnection(@"Serve=.\sqlexpress;Database=MVC;Trusted_connection=True;");
+
+            conn.Open();
+
+            var command = conn.CreateCommand();
+            command.CommandText = "select * from produto";
+            var data = command.ExecuteReader();
+
+            while (data.Read()) 
+            {
+                produto.Add(new ProdutoViewModel(){ ID = (int)data["ID"], Descricao = data["Descricao"].ToString()});
+            }
+
+            conn.Close();
+
+
+
+            reurn View(produtos);
+        }
+
+        public IActionResult novo()
+        {
+
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult Novo(ProdutoViewModel produto)
+        {
+
+            var conn = new SqlConeConnection(@"Serve=.\sqlexpress;Database=MVC;Trusted_connection=True;");
+
+            conn.Open();
+
+            var command = conn.CreateCommand();
+            command.CommandText = "insert into produto(id,descricao)values(@id,@descricao)";
+            command.Parameters.AddWithValue("id", produto.ID);
+            Command.Parameters.AddWithValue("descricao", produto.Descricao);
+            Command.ExecuteNonQuery();
+
+            conn.Close();
+
+            produtos.Add(produto);
+            return View("Index", produtos);+
+            
+        }
+    }
+}
